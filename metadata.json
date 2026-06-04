@@ -1,0 +1,6 @@
+{
+  "name": "SRTConvert",
+  "description": "Premium AI-powered subtitle generator. Convert MP3 and MP4 files to SRT with cinematic precision.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
