@@ -178,14 +178,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Support
 
-### Report Issues
-Found a bug? Please report it on [GitHub Issues](https://github.com/yourusername/Srt_Convert/issues)
-
-### Documentation
-Full documentation available at [https://Srt_Convert.docs](https://Srt_Convert.docs)
-
-### Discord Community
-Join our community for help and updates: [Discord Server](https://discord.gg/Srt_Convert)
+### Soon
 
 ## Changelog
 
