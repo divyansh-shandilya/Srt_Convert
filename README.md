@@ -24,7 +24,7 @@ npm install -g srt-convert
 ### From source
 
 ```bash
-git clone https://github.com/yourusername/srt-convert.git
+git clone https://github.com/divyansh-shandilya/srt-convert.git
 cd srt-convert
 npm install
 npm link
