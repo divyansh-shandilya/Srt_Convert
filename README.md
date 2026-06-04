@@ -1,283 +1,211 @@
-# SRT Convert
+# SRTConvert — AI Subtitle Generator
 
-A lightweight, flexible command-line tool for converting SubRip (.srt) subtitle files to multiple formats and vice versa.
-
-## Features
-
-- **Multiple Format Support**: Convert between SRT, VTT, SSA/ASS, SBV, and JSON
-- **Batch Processing**: Convert multiple files at once
-- **Customizable Output**: Configure timing adjustments, encoding, and formatting options
-- **Lossless Conversion**: Preserves subtitle timing and content accuracy
-- **Encoding Support**: UTF-8, UTF-16, and various other character encodings
-- **Timeline Shift**: Adjust subtitle timing by milliseconds or seconds
-- **Filter & Search**: Extract subtitles by time range or text content
-- **Cross-Platform**: Works on Windows, macOS, and Linux
-
-## Installation
-
-### From npm
-
-```bash
-npm install -g srt-convert
-```
-
-### From source
-
-```bash
-git clone https://github.com/divyansh-shandilya/srt-convert.git
-cd srt-convert
-npm install
-npm link
-```
-
-### Docker
-
-```bash
-docker run -v $(pwd):/data srt-convert <command> <options>
-```
-
-## Quick Start
-
-### Basic Conversion
-
-Convert SRT to VTT:
-```bash
-srt-convert input.srt output.vtt
-```
-
-Convert any format to SRT:
-```bash
-srt-convert input.vtt output.srt
-```
-
-### Batch Processing
-
-Convert all SRT files in a directory:
-```bash
-srt-convert --batch ./subtitles --output-format vtt
-```
-
-## Usage
-
-### Command Line
-
-```bash
-srt-convert [input] [output] [options]
-```
-
-### Options
-
-| Option | Short | Description | Default |
-|--------|-------|-------------|---------|
-| `--format` | `-f` | Output format (srt, vtt, ssa, sbv, json) | auto-detect |
-| `--encoding` | `-e` | Output encoding (utf-8, utf-16, latin1, etc.) | utf-8 |
-| `--shift` | `-s` | Shift timing by milliseconds (positive or negative) | 0 |
-| `--start-index` | | Start subtitle numbering from this value | 1 |
-| `--remove-styles` | | Strip formatting tags from output | false |
-| `--filter-start` | | Only include subtitles after this timestamp (HH:MM:SS) | - |
-| `--filter-end` | | Only include subtitles before this timestamp (HH:MM:SS) | - |
-| `--batch` | `-b` | Process all files in directory | false |
-| `--preserve-metadata` | `-p` | Keep original metadata in output | true |
-| `--strict` | | Enable strict parsing mode | false |
-| `--verbose` | `-v` | Show detailed processing information | false |
-
-## Examples
-
-### Convert with timing adjustment
-
-Shift all subtitles forward by 2.5 seconds:
-```bash
-srt-convert movie.srt movie-adjusted.srt --shift 2500
-```
-
-### Extract subtitles from time range
-
-Extract subtitles between 10 and 20 minutes:
-```bash
-srt-convert full-subtitles.srt excerpt.srt --filter-start 00:10:00 --filter-end 00:20:00
-```
-
-### Convert to JSON for programmatic use
-
-```bash
-srt-convert subtitles.srt subtitles.json
-```
-
-Output format:
-```json
-{
-  "subtitles": [
-    {
-      "index": 1,
-      "startTime": "00:00:01,000",
-      "endTime": "00:00:03,500",
-      "text": "Subtitle text here"
-    }
-  ]
-}
-```
-
-### Remove styling and convert to VTT
-
-```bash
-srt-convert styled.srt clean.vtt --remove-styles
-```
-
-### Batch convert with different encoding
-
-```bash
-srt-convert --batch ./subtitles --format vtt --encoding utf-16
-```
-
-## Supported Formats
-
-### Input Formats
-- **SRT** (SubRip) - .srt
-- **VTT** (WebVTT) - .vtt
-- **SSA/ASS** (Advanced SubStation) - .ssa, .ass
-- **SBV** (YouTube) - .sbv
-- **JSON** - .json
-
-### Output Formats
-- SRT (SubRip)
-- VTT (WebVTT)
-- SSA/ASS (Advanced SubStation)
-- SBV (YouTube)
-- JSON
-
-## API Usage
-
-Use srt-convert as a Node.js module:
-
-```javascript
-const SrtConvert = require('srt-convert');
-
-// Convert file
-SrtConvert.convertFile('input.srt', 'output.vtt', {
-  shift: 2500,
-  encoding: 'utf-8',
-  removeStyles: false
-}).then(() => {
-  console.log('Conversion complete');
-}).catch(err => {
-  console.error('Conversion failed:', err);
-});
-
-// Convert string
-const srtContent = `1
-00:00:01,000 --> 00:00:03,500
-Hello World`;
-
-SrtConvert.convertString(srtContent, 'srt', 'vtt')
-  .then(vttContent => console.log(vttContent));
-```
-
-## Configuration File
-
-Create a `.srtconvertrc.json` file in your project for default options:
-
-```json
-{
-  "format": "vtt",
-  "encoding": "utf-8",
-  "removeStyles": false,
-  "shift": 0,
-  "startIndex": 1
-}
-```
-
-## Common Use Cases
-
-### YouTube Subtitles
-Convert YouTube SBV files to SRT for general use:
-```bash
-srt-convert youtube-video.sbv youtube-video.srt
-```
-
-### Video Editor Compatibility
-Convert to SSA format for subtitle editing software:
-```bash
-srt-convert video.srt video.ssa
-```
-
-### Web Deployment
-Convert to VTT for HTML5 video players:
-```bash
-srt-convert video.srt video.vtt
-```
-
-### Timing Synchronization
-If subtitles are out of sync with video:
-```bash
-srt-convert out-of-sync.srt synchronized.srt --shift -500
-```
-
-## Troubleshooting
-
-### "Cannot parse file" error
-- Ensure file encoding is UTF-8 or supported by the tool
-- Check that file format matches the actual content
-- Use `--strict` mode disabled for more lenient parsing
-
-### Garbled characters in output
-- Specify output encoding: `--encoding utf-8`
-- Try a different encoding if the default doesn't work
-
-### Timing issues
-- Verify timing format is correct: HH:MM:SS,mmm
-- Check video player supports the subtitle format
-
-### Performance with large files
-- Use batch processing for multiple files
-- Consider splitting very large subtitle files
-
-## Performance Metrics
-
-- Process ~1,000 subtitle lines per second
-- Memory usage: <50MB for files under 10,000 subtitles
-- Batch processing: ~10 files/second
-
-## Contributing
-
-We welcome contributions! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-soon :)
-
-## Changelog
-
-### v1.0.0
-- Initial release
-- Support for SRT, VTT, SSA/ASS, SBV, and JSON formats
-- Batch processing capability
-- Timing adjustment features
-- Full filtering support
-
-## FAQ
-
-**Q: Does srt-convert support .sub files?**  
-A: We currently support the formats listed above. .SUB files have multiple formats; please convert to SRT or VTT first.
-
-**Q: Can I use this for commercial projects?**  
-A: Yes, the MIT license permits commercial use.
-
-**Q: Is there a GUI version?**  
-A: Currently, srt-convert is CLI-only, but a web interface is planned for future releases.
-
-**Q: How accurate is the conversion?**  
-A: We aim for 100% lossless conversion. Any issues are considered bugs.
+SRTConvert turns your audio and video files into accurate, professionally timed subtitles. Upload an MP3 or MP4, pick a language, and get back a subtitle file in whatever format your workflow needs — all powered by state-of-the-art AI transcription.
 
 ---
 
-**Made with ❤️ by the SRT Convert Team**
+## What it does
+
+Drop in a media file and SRTConvert handles the rest. It transcribes the audio using Groq's Whisper large-v3 model, formats the output into precise SRT segments, and lets you download the result in a wide range of subtitle and document formats. Files larger than 25 MB are automatically routed through Google Gemini instead, so there's no practical size ceiling for Pro users.
+
+The app supports 20 languages out of the box — English, Spanish, French, German, Italian, Portuguese, Dutch, Polish, Russian, Japanese, Korean, Chinese, Arabic, Turkish, Hindi, Vietnamese, Thai, Indonesian, Greek, and Hebrew.
+
+---
+
+## Export formats
+
+SRTConvert goes well beyond basic `.srt`. You can export your subtitles as:
+
+**Subtitle formats** — SRT, WebVTT, Scenarist SCC (29.97 DF and NDF), Spruce STL, Advanced SubStation Alpha (ASS), TimedText TTML, QuickTime Text, Netflix DFXP, SAMI, MicroDVD, SubViewer 2.0, YouTube SBV, LRC
+
+**Document formats** — Plain text, CSV, Word (.docx), PDF, Excel (.xlsx)
+
+---
+
+## Tech stack
+
+| Layer | What's used |
+|---|---|
+| Frontend | React 19, TypeScript, Tailwind CSS v4, Framer Motion |
+| Backend | Node.js, Express, Vite (dev middleware) |
+| Transcription | Groq Whisper large-v3 (≤25 MB), Google Gemini (>25 MB) |
+| Auth | Google OAuth 2.0 |
+| Payments | PayPal Subscriptions |
+| Database | SQLite (local, via better-sqlite3) + Supabase (cloud sync) |
+
+---
+
+## Getting started
+
+**Prerequisites:** Node.js 18+
+
+### 1. Clone and install
+
+```bash
+git clone <your-repo-url>
+cd srtconvert
+npm install
+```
+
+### 2. Set up environment variables
+
+Copy the example env file and fill in your keys:
+
+```bash
+cp .env.example .env.local
+```
+
+Open `.env.local` and set the following:
+
+```env
+# Required — Groq API key for transcription (files ≤25 MB)
+GROQ_API_KEY=your_groq_api_key_here
+
+# Required for files >25 MB (Pro tier)
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# Google OAuth (for login)
+GOOGLE_CLIENT_ID=your_google_client_id_here
+GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+
+# App URL (must match your OAuth redirect URI)
+APP_URL=http://localhost:3000
+
+# Supabase (optional — used for cloud sync of contact leads)
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+
+# Other
+PORT=3000
+JWT_SECRET=a_long_random_secret_string
+```
+
+> **Getting a Groq key:** Sign up at [console.groq.com](https://console.groq.com) — it's free to start.
+> **Getting a Gemini key:** Go to [aistudio.google.com](https://aistudio.google.com) → Get API key.
+
+### 3. Run in development
+
+```bash
+npm run dev
+```
+
+The app will be available at `http://localhost:3000`. Vite's dev server runs as Express middleware, so there's only one process to manage.
+
+### 4. Build for production
+
+```bash
+npm run build
+npm run preview  # to test the production build locally
+```
+
+In production mode the server serves the compiled `dist/` folder as static files.
+
+---
+
+## Database setup
+
+SRTConvert uses two databases in tandem:
+
+**SQLite** runs locally with zero configuration. The `data/app.db` file is created automatically on first launch and stores contact form submissions as an offline-first source of truth.
+
+**Supabase** is optional but recommended for cloud persistence. If you provide valid Supabase credentials, contact submissions will automatically sync there too. If any required tables are missing, the app will display a banner with an SQL script you can paste directly into your Supabase SQL Editor.
+
+Required tables in Supabase (if used):
+
+```sql
+CREATE TABLE contact_submissions (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  company TEXT,
+  message TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users ON DELETE CASCADE,
+  email TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE subscriptions (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  plan TEXT,
+  status TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+---
+
+## Google OAuth setup
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials.
+2. Create an OAuth 2.0 Client ID (Web application type).
+3. Add `http://localhost:3000/auth/callback` as an authorized redirect URI (and your production URL when deploying).
+4. Copy the Client ID and Client Secret into your `.env.local`.
+
+---
+
+## PayPal subscriptions
+
+The frontend is wired to a PayPal sandbox client ID. To use real subscriptions:
+
+1. Create a PayPal developer account at [developer.paypal.com](https://developer.paypal.com).
+2. Set up a subscription plan in your PayPal dashboard.
+3. Replace the `clientId` in `src/main.tsx` with your live client ID.
+
+---
+
+## Admin panel
+
+An admin-only view is available to the account registered as the administrator. It lists all contact form submissions stored in SQLite and provides a one-click button to sync any unsynced leads to Supabase. You can also delete individual leads from this panel.
+
+Access is gated to the admin email address set in `server.ts`.
+
+---
+
+## Project structure
+
+```
+├── server.ts          # Express server — API routes, transcription, auth, admin
+├── server/
+│   ├── db.ts          # SQLite helpers (save, read, sync, delete leads)
+│   └── supabase.ts    # Supabase client factory with env-reload support
+├── src/
+│   ├── App.tsx        # Main React app — UI, upload flow, export logic
+│   ├── main.tsx       # React entry point, PayPal provider
+│   ├── index.css      # Tailwind + custom design tokens (light/dark)
+│   └── index.html     # HTML shell
+├── vite.config.ts     # Vite config with Tailwind plugin and path aliases
+├── tsconfig.json      # TypeScript config
+└── package.json
+```
+
+---
+
+## Scripts
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the dev server with hot reload |
+| `npm run build` | Compile the frontend for production |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Type-check the project with `tsc --noEmit` |
+| `npm run clean` | Delete the `dist/` directory |
+
+---
+
+## Notes and limits
+
+- The default file size limit is **100 MB**, enforced by Multer on the server. Files above 25 MB require a valid `GEMINI_API_KEY`.
+- Transcription uses `whisper-large-v3` with a 120-second timeout and up to 5 retries for resilience on large files.
+- Uploaded files are written to a local `uploads/` directory during processing and can be cleaned up after the transcription completes.
+- The Groq client is lazy-initialized — if you add the API key after first launch, the server will pick it up on the next transcription request without a restart.
+
+---
+
+## License
+
+MIT © 2026 SRTConvert AI
