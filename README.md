@@ -42,7 +42,7 @@ SRTConvert goes well beyond basic `.srt`. You can export your subtitles as:
 ### 1. Clone and install
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/divyansh-shandilya/Srt_Convert
 cd srtconvert
 npm install
 ```
